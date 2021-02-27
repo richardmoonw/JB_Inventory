@@ -1,4 +1,4 @@
-class ProductsController < ApplicationController
+class ProductController < ApplicationController
     before_action :find_product, only: [:show, :destroy, :update]
 
     def index
@@ -11,7 +11,7 @@ class ProductsController < ApplicationController
         if @product.save
             head 201
         else
-            render error: {error: 'It was impossible to create a new product'}, status: 400
+            head 400
         end
     end
 
@@ -19,14 +19,14 @@ class ProductsController < ApplicationController
         if @product
             render json: @product
         else 
-            render error: {error: 'There was not found any item with the specifief id'}, status: 404
+            head 404
         end
     end
 
     def destroy
         if @product 
             if @product.destroy
-                render json: {}, status: 200
+                head 200
             else
                 head 409
             end
