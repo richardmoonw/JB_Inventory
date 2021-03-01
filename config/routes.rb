@@ -1,3 +1,6 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+
+  resources :product, only: [:index, :create, :show, :update, :destroy]
+  resources :category, only: [:index, :create, :show, :update, :destroy]
+
 end

@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module Inventory
   class Application < Rails::Application
+    # Make the application an API one
+    config.api_only = true
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
 
