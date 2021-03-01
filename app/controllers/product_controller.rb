@@ -1,12 +1,15 @@
 class ProductController < ApplicationController
     before_action :find_product, only: [:show, :destroy, :update]
 
+    # Get all the products.
     def index
         @products = Product.all
         render json: @products.to_json(include: [:categories])
     end
 
+    # Create a new product.
     def create
+        # Unless any category was specified.
         if !product_params[:category_ids].empty?
             @product = Product.new(product_params)
             
@@ -21,6 +24,7 @@ class ProductController < ApplicationController
         
     end
 
+    # Get a specific product.
     def show
         if @product
             render json: @product.to_json(include: [:categories])
@@ -29,9 +33,11 @@ class ProductController < ApplicationController
         end
     end
 
+    # Delete a product.
     def destroy
         if @product 
-            if @product.destroy and @product.categories.clear
+            # Clear all the categories that the product has and add the new ones.
+            if @product.categories.clear and @product.destroy
                 head 200
             else
                 head 409
@@ -41,6 +47,7 @@ class ProductController < ApplicationController
         end 
     end
 
+    # Update a product.
     def update
         if @product
             @product.categories.clear
@@ -56,6 +63,7 @@ class ProductController < ApplicationController
     end
             
     private 
+    # Catch the parameters of the request.
     def product_params
         params.require(:product).permit(:name, category_ids: [])
     end
