@@ -3,7 +3,7 @@ class CategoryController < ApplicationController
 
     def index
         @categories = Category.all
-        render json: @categories
+        render json: @categories.to_json(include: [:products])
     end
 
     def create
@@ -16,8 +16,8 @@ class CategoryController < ApplicationController
     end
 
     def show
-        if @product
-            render json: @category
+        if @category
+            render json: @category.to_json(include: [:products])
         else
             head 404
         end
@@ -25,10 +25,10 @@ class CategoryController < ApplicationController
 
     def destroy 
         if @category
-            if @category.destroy
-                head 200
-            else
+            if @category.products.any?
                 head 409
+            else 
+                @category.destroy
             end
         else
             head 404
@@ -37,6 +37,7 @@ class CategoryController < ApplicationController
 
     def update
         if @category
+            @category.products.clear
             if @category.update(category_params)
                 head 200
             else
@@ -49,7 +50,7 @@ class CategoryController < ApplicationController
 
     private
     def category_params
-        params.require(:category).permit(:name)
+        params.require(:category).permit(:name, product_ids: [])
     end
 
     def find_category
